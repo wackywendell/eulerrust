@@ -1,0 +1,5 @@
+[package]
+
+name = "eulerrust"
+version = "0.1.0"
+authors = [ "wackywendell@gmail.com" ]
