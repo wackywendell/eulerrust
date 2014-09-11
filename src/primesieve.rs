@@ -132,6 +132,14 @@ impl PrimeSet {
         }
         return Some((base, self.lst[base]));
     }
+    
+    pub fn get(&mut self, index : &uint) -> &uint {
+		for _ in range(0, (*index as int) + 1 - (self.lst.len() as int)){
+			self.expand();
+		}
+        self.lst.index(index)
+	}
+		
 }
 
 impl Index<uint, uint> for PrimeSet {
