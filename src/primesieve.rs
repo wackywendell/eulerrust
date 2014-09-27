@@ -180,7 +180,7 @@ pub fn factors(x: uint) -> Vec<uint> {
     let mut curn = x;
     loop  {
         let m = firstfac(curn);
-        lst = lst.append_one(m);
+        lst.push(m);
         if m == curn { break  } else { curn /= m };
     }
     return lst
@@ -192,7 +192,7 @@ pub fn factors_uniq(x: uint) -> Vec<uint> {
     let mut curn = x;
     loop  {
         let m = firstfac(curn);
-        lst = lst.append_one(m);
+        lst.push(m);
         if curn == m { break ; }
         while curn % m == 0 { curn /= m; }
         if curn == 1 { break ; }

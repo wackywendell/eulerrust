@@ -9,6 +9,7 @@
 use std::collections::TrieSet;
 
 use std::collections::HashMap;
+use std::collections::hashmap::{Occupied, Vacant};
 
 pub use primesieve::PrimeSet;
 
@@ -18,7 +19,10 @@ pub mod primesieve;
 pub fn counter<K : std::hash::Hash + Eq, I : Iterator<K>>(mut list : I) -> HashMap<K, uint> {
 	let mut counter : HashMap<K, uint> = HashMap::new();
 	for key in list {
-		counter.insert_or_update_with(key, 1, |_, v| {*v += 1});
+		match counter.entry(key) {
+			Vacant(entry) => {entry.set(1);},
+			Occupied(entry) => {(*entry.into_mut()) += 1;}
+		}
 	}
 	counter
 }
