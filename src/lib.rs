@@ -80,6 +80,36 @@ pub fn is_palindrome(n : uint) -> bool {
 	}
 }
 
+#[deriving(Clone)]
+pub struct Pairs<'a, T :'a>{
+	vector : &'a [T],
+	first : uint,
+	second : uint
+}
+
+impl<'a, T> Iterator<(&'a T, &'a T)> for Pairs<'a, T> {
+	fn next(&mut self) -> Option<(&'a T, &'a T)> {
+		let l = self.vector.len();
+		if self.second >= l-1 && self.first >= l-2 {return None;}
+		self.second += 1;
+		
+		if self.second >= l {
+			self.first += 1;
+			self.second = self.first + 1;
+		}
+		
+		return unsafe { Some((self.vector.unsafe_get(self.first), self.vector.unsafe_get(self.second)))}
+	}
+}
+
+pub fn pairs<'a, T>(vec : &'a [T]) -> Pairs<'a, T>{
+	Pairs {
+		vector : vec,
+		first : 0,
+		second : 0
+	}
+}
+
 #[test]
 fn test_square(){
 	assert_eq!(isqrt_opt(4), Some(2));
@@ -143,4 +173,24 @@ fn test_palindrome(){
 	assert!(is_palindrome(111));
 	assert!(is_palindrome(232));
 	assert!(is_palindrome(181));
+}
+
+#[test]
+fn test_pairs(){
+	let v = [1,2,5,4u];
+	let mut my_pairs = pairs(v);
+	
+	assert_eq!(my_pairs.next(), Some((&v[0], &v[1])));
+	assert_eq!(my_pairs.next(), Some((&v[0], &v[2])));
+	assert_eq!(my_pairs.next(), Some((&v[0], &v[3])));
+	assert_eq!(my_pairs.next(), Some((&v[1], &v[2])));
+	assert_eq!(my_pairs.next(), Some((&v[1], &v[3])));
+	assert_eq!(my_pairs.next(), Some((&v[2], &v[3])));
+	//~ assert_eq!(my_pairs.next(), Some((&1, &5)));
+	//~ assert_eq!(my_pairs.next(), Some((&1, &4)));
+	//~ assert_eq!(my_pairs.next(), Some((&2, &5)));
+	//~ assert_eq!(my_pairs.next(), Some((&2, &4)));
+	//~ assert_eq!(my_pairs.next(), Some((&5, &4)));
+	assert_eq!(my_pairs.next(), None);
+	assert_eq!(my_pairs.next(), None);
 }
