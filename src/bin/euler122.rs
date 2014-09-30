@@ -32,6 +32,10 @@ For 1 ≤ k ≤ 200, find ∑ m(k).
 
 ----------------------------------------------------------------------------------------------------
 
+This code is a bit messy, and does things it doesn't need to - it took me a while to figure things out.
+
+Basically, it just follows the tree to every possibility < n, and stops at a max level of the tree.
+
 **/
 
 extern crate eulerrust;
@@ -39,19 +43,10 @@ use std::collections::TrieMap;
 use std::collections::dlist::DList;
 use std::collections::Deque;
 
-fn merge_vecs<T : Eq + Clone>(v1 : &Vec<T>, v2 : &Vec<T>) -> Vec<T> {
-	let mut v : Vec<T> = v1.clone();
-	for val in v2.iter() {
-		if v.contains(val) {continue;};
-		v.push(val.clone());
-	}
-	
-	v
-}
-
 pub struct Multiplications {
 	sum : uint,
-	path : Vec<(uint, uint, uint)> // x,y,z where n^x = n^y * n^z
+	path : Vec<(uint, uint, uint)>, // x,y,z where n^x = n^y * n^z
+	increasing : bool
 }
 
 impl Multiplications {
@@ -66,25 +61,36 @@ impl Multiplications {
 	pub fn append(&self, n1 : uint, n2 : uint) -> Multiplications {
 		let mut newpath = self.path.clone();
 		newpath.push((n1 + n2, n1, n2));
+		let increasing = match self.path.last() {
+			None => true,
+			Some(&(_, _, m2)) if m2 > n2 => false,
+			Some(&(_, _, m2)) if m2 == n2 => self.increasing,
+			Some(_) => true,
+			
+		};
 		Multiplications {
 			sum : n1 + n2,
-			path : newpath
+			path : newpath,
+			increasing : increasing
 		}
 	}
 }
 
-fn find_ms(n : uint) -> TrieMap<Vec<(uint,uint,uint)>> {
+fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>> {
 	let mut tmap = TrieMap::new();
 	let mut queue = DList::new();
 	
 	let first = Multiplications {
 		sum : 1,
-		path : vec![(1,0,0)]
+		path : vec![(1,0,0)],
+		increasing : true
 	};
 	
 	tmap.insert(first.sum, first.path.clone());
 	
 	queue.push(first);
+	
+	let maxn = (n as f32).log2().ceil() as uint * 2;
 	
 	loop {
 		let last = match queue.pop_front() {
@@ -95,55 +101,87 @@ fn find_ms(n : uint) -> TrieMap<Vec<(uint,uint,uint)>> {
 		//~ println!("------------------------------");
 		//~ println!("{} : {}", last.sum, last.path);
 		
-		for (i1, &(n1, _, _)) in last.path.iter().enumerate() {
-			for &(n2, _, _) in last.path.slice_from(i1).iter() {
-				if n1 + n2 <= last.sum { continue; }
-				if n1 + n2 > n { continue;}
-				let maxn = ((n1 + n2) as f32).log2().ceil() as uint * 2;
-				if last.path.len() >= maxn {continue;}
-				let new_m = last.append(n1,n2);
-				//~ println!("  =>  {} : {}", new_m.sum, new_m.path);
-				//~ match tmap.find_mut(&new_m.sum) {
-					//~ None => {tmap.insert(new_m.sum, new_m.path.clone());},
-					//~ Some(old) => { if old.len() > new_m.path.len() {*old = new_m.path};}
+		let n1 = last.sum;
+		for &(n2, _, _) in last.path.iter() {
+			if n1 + n2 > n { continue;}
+			if !last.increasing {
+				//~ match last.path.last() {
+					//~ None => fail!("This should be impossible."),
+					//~ Some(&(m12, m1, m2)) if m2 < n2 => {
+						//~ println!("CONTINUING: {} :: {}", last.path, (n1,n2));
+						//~ continue;
+					//~ }
+					//~ _ => {}
 				//~ }
-				
-				let should_insert = match tmap.find_mut(&new_m.sum) {
-					None => true,
-					Some(old) => {
-							if old.len() > new_m.path.len() {
-								println!("  =>  {} : {}", new_m.sum, new_m.path);
-								println!("      replacing {}", old);
-								*old = new_m.path.clone()
-							};
-							false
-						}
-				};
-				
-				if should_insert {
-					println!("  =>  {} : {}", new_m.sum, new_m.path);
-					println!("      New!");
-					tmap.insert(new_m.sum, new_m.path.clone());
-				};
-				
-				if new_m.sum < n {queue.push_front(new_m);};
+			};
+			// let maxn = ((n1 + n2) as f32).log2().ceil() as uint * 2;
+			if last.path.len() >= maxn {continue;}
+			match max_depth {
+				Some(d) if d < last.path.len() => {continue;}
+				_ => {}
 			}
+			let new_m = last.append(n1,n2);
+			//~ println!("  =>  {} : {}", new_m.sum, new_m.path);
+			//~ match tmap.find_mut(&new_m.sum) {
+				//~ None => {tmap.insert(new_m.sum, new_m.path.clone());},
+				//~ Some(old) => { if old.len() > new_m.path.len() {*old = new_m.path};}
+			//~ }
+			
+			let should_insert = match tmap.find_mut(&new_m.sum) {
+				None => true,
+				Some(old) => {
+						if old.len() > new_m.path.len() {
+							//~ if new_m.sum == 37 {
+								//~ println!("  =>  {} : {}", new_m.sum, new_m.path);
+								//~ println!("      replacing {}", old);
+							//~ }
+							*old = new_m.path.clone()
+						//~ } else if new_m.sum == 37 {
+							//~ println!("  =>  {} : {}", new_m.sum, new_m.path);
+							//~ println!("      NOT replacing {}", old);
+						};
+						false
+					}
+			};
+			
+			if should_insert {
+				//~ if new_m.sum == 37 {
+					//~ println!("  =>  {} : {}", new_m.sum, new_m.path);
+					//~ println!("      New!");
+				//~ }
+				tmap.insert(new_m.sum, new_m.path.clone());
+			};
+			
+			if new_m.sum < n {queue.push_front(new_m);};
 		}
 	}
 }
 
-
 #[test]
-fn test_merge_vecs(){
-	let (v1, v2) = (vec!(1u,2,3), vec!(2,3,4,5));
-	let v = merge_vecs(&v1, &v2);
-	assert_eq!(v, vec!(1,2,3,4,5));
+fn test_find_ms() {
+	let ms = find_ms(15, Some(11));
+	let v = match ms.find(&15){
+		None => fail!("15 NOT FOUND"),
+		Some(v2) => v2
+	};
+	
+	assert_eq!(v.len() - 1, 5);
 }
 
 pub fn main(){
-	let ms = find_ms(100);
+	let bigm = 200;
+	let ms = find_ms(bigm, Some(11)); // 11 found by trial and error; 10 doesn't get everything, 11 works, so take 11...
 	
-	for (k, v) in ms.iter() {
-		println!("{} :: {}", k, v.len() - 1);
+	let mut msum = 0;
+	for k in range(1, bigm+1){
+		let v = match ms.find(&k){
+			None => fail!("NOT FOUND: {}", k),
+			Some(v2) => v2
+		};
+	//~ for (k, v) in ms.iter() {
+		println!("{} :: {} {}", k, v.len() - 1, v);
+		msum += v.len() - 1;
 	}
+	println!("================================================================================");
+	println!("Final sum: {} {}", msum, ms.len());
 }
