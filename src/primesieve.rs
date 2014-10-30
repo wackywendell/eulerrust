@@ -106,7 +106,7 @@ impl PrimeSet {
             if n % m == 0 {return false;};
             if m*m > n {return true;};
         }
-        fail!("This iterator should not be empty.");
+        panic!("This iterator should not be empty.");
     }
     
     /// Find the next largest prime from a number, if it is within the already-found list

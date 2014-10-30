@@ -106,7 +106,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>>
 			if n1 + n2 > n { continue;}
 			if !last.increasing {
 				//~ match last.path.last() {
-					//~ None => fail!("This should be impossible."),
+					//~ None => panic!("This should be impossible."),
 					//~ Some(&(m12, m1, m2)) if m2 < n2 => {
 						//~ println!("CONTINUING: {} :: {}", last.path, (n1,n2));
 						//~ continue;
@@ -161,7 +161,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>>
 fn test_find_ms() {
 	let ms = find_ms(15, Some(11));
 	let v = match ms.find(&15){
-		None => fail!("15 NOT FOUND"),
+		None => panic!("15 NOT FOUND"),
 		Some(v2) => v2
 	};
 	
@@ -175,7 +175,7 @@ pub fn main(){
 	let mut msum = 0;
 	for k in range(1, bigm+1){
 		let v = match ms.find(&k){
-			None => fail!("NOT FOUND: {}", k),
+			None => panic!("NOT FOUND: {}", k),
 			Some(v2) => v2
 		};
 	//~ for (k, v) in ms.iter() {
