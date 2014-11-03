@@ -2,9 +2,9 @@
 
 #[warn(non_camel_case_types)]
 #[warn(non_snake_case)]
-#[warn(unnecessary_qualification)]
-#[warn(non_uppercase_statics)]
-#[warn(missing_doc)]
+#[warn(unused_qualifications)]
+#[warn(non_upper_case_globals)]
+#[warn(missing_docs)]
 
 /// A prime generator object, using Eratosthenes' sieve.
 
