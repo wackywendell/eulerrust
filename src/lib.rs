@@ -9,7 +9,7 @@
 use std::collections::TrieSet;
 
 use std::collections::HashMap;
-use std::collections::hashmap::{Occupied, Vacant};
+use std::collections::hash_map::{Occupied, Vacant};
 
 pub use primesieve::PrimeSet;
 

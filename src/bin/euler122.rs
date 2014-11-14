@@ -40,7 +40,7 @@ Basically, it just follows the tree to every possibility < n, and stops at a max
 
 extern crate eulerrust;
 use std::collections::TrieMap;
-use std::collections::dlist::DList;
+use std::collections::RingBuf;
 
 pub struct Multiplications {
 	sum : uint,
@@ -77,7 +77,7 @@ impl Multiplications {
 
 fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>> {
 	let mut tmap = TrieMap::new();
-	let mut queue = DList::new();
+	let mut queue = RingBuf::new();
 	
 	let first = Multiplications {
 		sum : 1,
@@ -87,7 +87,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>>
 	
 	tmap.insert(first.sum, first.path.clone());
 	
-	queue.push(first);
+	queue.push_back(first);
 	
 	let maxn = (n as f32).log2().ceil() as uint * 2;
 	
@@ -126,7 +126,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>>
 				//~ Some(old) => { if old.len() > new_m.path.len() {*old = new_m.path};}
 			//~ }
 			
-			let should_insert = match tmap.find_mut(&new_m.sum) {
+			let should_insert = match tmap.get_mut(&new_m.sum) {
 				None => true,
 				Some(old) => {
 						if old.len() > new_m.path.len() {
@@ -159,7 +159,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> TrieMap<Vec<(uint,uint,uint)>>
 #[test]
 fn test_find_ms() {
 	let ms = find_ms(15, Some(11));
-	let v = match ms.find(&15){
+	let v = match ms.get(&15){
 		None => panic!("15 NOT FOUND"),
 		Some(v2) => v2
 	};
@@ -173,7 +173,7 @@ pub fn main(){
 	
 	let mut msum = 0;
 	for k in range(1, bigm+1){
-		let v = match ms.find(&k){
+		let v = match ms.get(&k){
 			None => panic!("NOT FOUND: {}", k),
 			Some(v2) => v2
 		};

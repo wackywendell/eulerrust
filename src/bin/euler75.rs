@@ -46,7 +46,7 @@ fn make_triplets(max_length : uint) -> Vec<(uint, uint, uint)> {
 		for m in range(2, n) {
 			let msq = m*m;
 			if n + m > max_length { break;}
-			match s.find(&(nsq + msq)) {
+			match s.get(&(nsq + msq)) {
 				Some(&l) if l+m+n <= max_length => { v.push((m,n,l)); }
 				Some(_) => break,
 				_ => continue

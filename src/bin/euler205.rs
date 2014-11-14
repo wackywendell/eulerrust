@@ -22,7 +22,7 @@ fn multiply_rolls(die : &Vec<uint>, last : &TrieMap<uint>) -> TrieMap<uint>{
 	let mut t = TrieMap::new();
 	for (r, &count) in last.iter(){
 		for &s in die.iter(){
-			let prev = t.find(&(r+s)).map(|&v|{v}).unwrap_or(0u);
+			let prev = t.get(&(r+s)).map(|&v|{v}).unwrap_or(0u);
 			t.insert(r+s, prev + count);
 		}
 	}
