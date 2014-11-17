@@ -7,6 +7,7 @@
 extern crate eulerrust;
 
 use std::collections::TrieMap;
+use std::num::Float;
 
 //~ fn make_triplets(max_length : uint) -> Vec<(uint, uint, uint)> {
 	//~ let mut v = Vec::new();

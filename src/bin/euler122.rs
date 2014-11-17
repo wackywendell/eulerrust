@@ -41,6 +41,7 @@ Basically, it just follows the tree to every possibility < n, and stops at a max
 extern crate eulerrust;
 use std::collections::TrieMap;
 use std::collections::RingBuf;
+use std::num::Float;
 
 pub struct Multiplications {
 	sum : uint,

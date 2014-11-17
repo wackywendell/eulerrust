@@ -12,6 +12,7 @@
 use std::ops::Index;
 use std::slice;
 use std::iter;
+use std::num::Float;
 
 
 fn sqrt_floor(n : uint) -> uint {
