@@ -134,13 +134,35 @@ impl PrimeSet {
         return Some((base, self.lst[base]));
     }
     
+    /// Get the nth prime, even if we haven't yet found it
     pub fn get(&mut self, index : &uint) -> &uint {
 		for _ in range(0, (*index as int) + 1 - (self.lst.len() as int)){
 			self.expand();
 		}
         self.lst.index(index)
 	}
-		
+	
+	/// Get the prime factors of a number, starting from 2, including repeats
+	pub fn prime_factors(&mut self, n: uint) -> Vec<uint> {
+		if n == 1 {return Vec::new();}
+		let mut curn = n;	
+		let mut m = ((curn as f64).sqrt()).ceil() as uint;
+		let mut lst: Vec<uint> = Vec::new();
+		for p in self.iter() {
+			while curn % p == 0 {
+				lst.push(p);
+				curn /= p;
+				if curn == 1 {return lst;}
+				m = ((curn as f64).sqrt()).ceil() as uint;
+			}
+			
+			if p > m {
+				lst.push(p);
+				return lst;
+			}
+		}
+		panic!("This should be unreachable.");
+	}
 }
 
 impl Index<uint, uint> for PrimeSet {
@@ -241,4 +263,20 @@ fn test_primes(){
     assert!(!is_prime(9));
     assert!(pset.is_prime(5));
     assert!(is_prime(5));
+}
+
+#[test]
+fn test_factors(){
+	let mut pset = PrimeSet::new();
+	
+	assert_eq!(pset.prime_factors(1), vec!());
+	assert_eq!(pset.prime_factors(2), vec!(2));
+	assert_eq!(pset.prime_factors(3), vec!(3));
+	assert_eq!(pset.prime_factors(4), vec!(2,2));
+	assert_eq!(pset.prime_factors(5), vec!(5));
+	assert_eq!(pset.prime_factors(6), vec!(2,3));
+	assert_eq!(pset.prime_factors(9), vec!(3,3));
+	
+	pset = PrimeSet::new();
+	assert_eq!(pset.prime_factors(12), vec!(2,2,3));
 }

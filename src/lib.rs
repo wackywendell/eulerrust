@@ -11,6 +11,9 @@ use std::collections::TrieSet;
 use std::collections::HashMap;
 use std::collections::hash_map::{Occupied, Vacant};
 
+#[cfg(test)]
+use std::num::Int;
+
 pub use primesieve::PrimeSet;
 
 pub mod primesieve;
@@ -119,13 +122,13 @@ fn test_square(){
 	
 	for _ in range(0u, 1000u){
 		let mut n = std::rand::random::<uint>();
-		n = n % std::num::pow(2u, std::uint::BITS / 2);
+		n = n % 2u.pow(std::uint::BITS / 2);
 		ntests.push(n);
 	}
 	
 	for &n in ntests.iter(){
 		println!("n: {}, n*n: {}", n, n*n);
-		assert!(n < std::num::pow(2u, std::uint::BITS / 2));
+		assert!(n < 2u.pow(std::uint::BITS / 2));
 		assert_eq!(isqrt_opt(n*n), Some(n));
 		if n > 1 {
 			assert_eq!(isqrt_opt(n*n - 1), None);
@@ -143,13 +146,13 @@ fn test_isqrt(){
 	
 	for i in range(1u, 1001u){
 		let mut n = std::rand::random::<uint>();
-		n = n % std::num::pow(2u, std::uint::BITS / 2);
+		n = n % 2u.pow(std::uint::BITS / 2);
 		ntests.push(n);
 		ntests.push(i);
 	}
 	
 	for &n in ntests.iter() {
-		assert!(n < std::num::pow(2u, std::uint::BITS / 2));
+		assert!(n < 2u.pow(std::uint::BITS / 2));
 		let x = isqrt(n);
 		assert!(x*x <= n);
 		assert!((x+1)*(x+1) > n);
@@ -178,7 +181,7 @@ fn test_palindrome(){
 #[test]
 fn test_pairs(){
 	let v = [1,2,5,4u];
-	let mut my_pairs = pairs(v);
+	let mut my_pairs = pairs(&v);
 	
 	assert_eq!(my_pairs.next(), Some((&v[0], &v[1])));
 	assert_eq!(my_pairs.next(), Some((&v[0], &v[2])));

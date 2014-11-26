@@ -78,7 +78,7 @@ pub fn main(){
 	
 	println!("{}-{}-{}", loss, tie, win);
 	
-	println!("{:.7f}", (win as f64) / ((loss + tie + win) as f64))
+	println!("{:.7}", (win as f64) / ((loss + tie + win) as f64))
 	// Should print:
 	// 4355187942-865512042-7009890480
 	// 0.5731441
