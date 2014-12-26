@@ -6,7 +6,7 @@
 
 extern crate eulerrust;
 
-use std::collections::TrieMap;
+use std::collections::HashMap;
 use std::num::Float;
 
 //~ fn make_triplets(max_length : uint) -> Vec<(uint, uint, uint)> {
@@ -29,7 +29,7 @@ use std::num::Float;
 //~ }
 
 fn make_triplets(max_length : uint) -> Vec<(uint, uint, uint)> {
-	let mut s = TrieMap::new();
+	let mut s = HashMap::new();
 	for n in range(0, max_length) {
 		let nsq = n*n;
 		s.insert(nsq, n);

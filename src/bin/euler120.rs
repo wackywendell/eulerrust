@@ -5,10 +5,10 @@
 #[warn(missing_docs)]
 
 extern crate eulerrust;
-use std::collections::TrieSet;
+use std::collections::HashSet;
 
 fn get_max_rem(a : uint) -> uint {
-	let mut set = TrieSet::new();
+	let mut set = HashSet::new();
 	let asq = a*a;
 	
 	let mut alo = 1;
@@ -27,7 +27,7 @@ fn get_max_rem(a : uint) -> uint {
 		if set.contains(&r){ break;}
 		set.insert(r);
 	}
-	set.iter().fold(0, |a, b| {if a > b {a} else {b}})
+	set.iter().fold(0, |a, &b| {if a > b {a} else {b}})
 }
 
 #[test]

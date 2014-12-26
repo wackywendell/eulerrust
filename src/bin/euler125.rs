@@ -5,11 +5,11 @@
 #[warn(missing_docs)]
 
 extern crate eulerrust;
-use std::collections::TrieSet;
+use std::collections::HashSet;
 use std::iter::range_step;
 
-pub fn get_palindrome_sums(max : uint) -> TrieSet {
-	let mut set = TrieSet::new();
+pub fn get_palindrome_sums(max : uint) -> HashSet<uint> {
+	let mut set = HashSet::new();
 	
 	for i in range(1u, eulerrust::isqrt(max)+1){
 		let mut isq = 0;
@@ -33,7 +33,7 @@ pub fn get_palindrome_sums(max : uint) -> TrieSet {
 #[test]
 fn test_euler125() {
 	let s = get_palindrome_sums(1000);
-	let ssum = s.iter().fold(0u, |a, b| a + b);
+	let ssum = s.iter().fold(0u, |a, &b| a + b);
 	assert_eq!(ssum, 4164);
 }
 
@@ -42,6 +42,6 @@ pub fn main(){
 	
 	println!("s len: {}", s.len());
 	
-	let ssum = s.iter().fold(0u, |a, b| a + b);
+	let ssum = s.iter().fold(0u, |a, &b| a + b);
 	println!("s sum: {}", ssum);
 }

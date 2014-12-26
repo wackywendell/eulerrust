@@ -6,25 +6,25 @@
 #[warn(non_upper_case_globals)]
 #[warn(missing_docs)]
 
-use std::collections::TrieSet;
+extern crate primes;
+
+use std::collections::HashSet;
 
 use std::collections::HashMap;
-use std::collections::hash_map::{Occupied, Vacant};
+use std::collections::hash_map::Entry;
 
 #[cfg(test)]
 use std::num::Int;
 
-pub use primesieve::PrimeSet;
-
-pub mod primesieve;
+pub use primes::PrimeSet;
 
 /// Count the number of occurrences of each value in an iterator
 pub fn counter<K : std::hash::Hash + Eq, I : Iterator<K>>(mut list : I) -> HashMap<K, uint> {
 	let mut counter : HashMap<K, uint> = HashMap::new();
 	for key in list {
 		match counter.entry(key) {
-			Vacant(entry) => {entry.set(1);},
-			Occupied(entry) => {(*entry.into_mut()) += 1;}
+			Entry::Vacant(entry) => {entry.set(1);},
+			Entry::Occupied(entry) => {(*entry.into_mut()) += 1;}
 		}
 	}
 	counter
@@ -33,7 +33,7 @@ pub fn counter<K : std::hash::Hash + Eq, I : Iterator<K>>(mut list : I) -> HashM
 pub fn isqrt_opt(n : uint) -> Option<uint> {
 	if n <= 1 {return Some(n);}
 	let mut x = n / 2;
-	let mut usedset = TrieSet::new();
+	let mut usedset = HashSet::new();
 	
 	//println!("New x: {}", x);
 	
@@ -53,7 +53,7 @@ pub fn isqrt_opt(n : uint) -> Option<uint> {
 pub fn isqrt(n : uint) -> uint {
 	if n <= 1 { return n; }
 	let mut x = n / 2;
-	let mut usedset = TrieSet::new();
+	let mut usedset = HashSet::new();
 	
 	while x*x != n {
 		usedset.insert(x);

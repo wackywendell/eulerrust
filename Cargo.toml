@@ -4,5 +4,9 @@ name = "eulerrust"
 version = "0.1.0"
 authors = [ "wackywendell@gmail.com" ]
 
+[dependencies]
+primes = "*"
+#num = "*"
+
 [dependencies.num]
 git = "https://github.com/rust-lang/num"
