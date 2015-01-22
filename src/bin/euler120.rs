@@ -7,14 +7,14 @@
 extern crate eulerrust;
 use std::collections::HashSet;
 
-fn get_max_rem(a : uint) -> uint {
+fn get_max_rem(a : u64) -> u64 {
 	let mut set = HashSet::new();
 	let asq = a*a;
 	
 	let mut alo = 1;
 	let mut ahi = 1;
 	
-	for n in range(1, 2*asq){
+	for n in 1..(2*asq){
 		alo *= a-1;
 		alo %= asq;
 		ahi *= a+1;
@@ -38,7 +38,7 @@ fn test_max_rem(){
 #[test]
 fn test_max_rem_long(){
 	let mut sum = 0;
-	for a in range(3, 1001){
+	for a in 3..1001 {
 		sum += get_max_rem(a);
 	}
 	assert_eq!(sum, 333082500); 
@@ -46,7 +46,7 @@ fn test_max_rem_long(){
 
 pub fn main(){
 	let mut sum = 0;
-	for a in range(3, 1001){
+	for a in 3..1001 {
 		sum += get_max_rem(a);
 	}
 	

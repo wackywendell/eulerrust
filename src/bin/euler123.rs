@@ -25,7 +25,7 @@ the sum is therefore either 2an (n odd) or 2 (n even).
 
 extern crate eulerrust;
 
-fn get_rem(a : uint, n : uint) -> uint{
+fn get_rem(a : u64, n : u64) -> u64 {
 	if n % 2 == 0 {
 		2
 	} else {
@@ -37,9 +37,9 @@ fn get_rem(a : uint, n : uint) -> uint{
 fn test_123(){
 	let mut pset = eulerrust::PrimeSet::new();
 	let (mut n, mut r) = (0,0);
-	while r < 1000*1000*1000 {
+	while r < 1000_000_000 {
 		n += 1;
-		let p = *pset.get(&n);
+		let p = *pset.get(&(n as usize));
 		r = get_rem(p, n);
 	}
 	assert_eq!(n, 7037);
@@ -48,14 +48,14 @@ fn test_123(){
 pub fn main() {
 	let mut pset = eulerrust::PrimeSet::new();
 	println!("{}", pset.len());
-	let p = *pset.get(&7037);
+	let p = *pset.get(&(7037 as usize));
 	println!("p_n: {}", p);
 	println!("rem: {}", get_rem(p, 7037));
 	
-	let (mut n, mut p, mut r) = (0u,0u,0u);
-	while r < 10*1000*1000*1000 {
+	let (mut n, mut p, mut r) = (0u64,0u64,0u64);
+	while r < 10_000_000_000 {
 		n += 1;
-		p = *pset.get(&n);
+		p = *pset.get(&(n as usize));
 		r = get_rem(p, n);
 	}
 	println!("n: {}, p: {}, r: {}", n, p, r);

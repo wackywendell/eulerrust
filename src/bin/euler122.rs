@@ -44,13 +44,13 @@ use std::collections::RingBuf;
 use std::num::Float;
 
 pub struct Multiplications {
-	sum : uint,
-	path : Vec<(uint, uint, uint)>, // x,y,z where n^x = n^y * n^z
+	sum : u64,
+	path : Vec<(u64, u64, u64)>, // x,y,z where n^x = n^y * n^z
 	increasing : bool
 }
 
 impl Multiplications {
-	pub fn contains(&self, n : uint) -> bool {
+	pub fn contains(&self, n : u64) -> bool {
 		let mut f = self.path.iter().filter(|&&(nsum, _, _)| {n == nsum});
 		match f.next() {
 			Some(_) => true,
@@ -58,7 +58,7 @@ impl Multiplications {
 		}
 	}
 	
-	pub fn append(&self, n1 : uint, n2 : uint) -> Multiplications {
+	pub fn append(&self, n1 : u64, n2 : u64) -> Multiplications {
 		let mut newpath = self.path.clone();
 		newpath.push((n1 + n2, n1, n2));
 		let increasing = match self.path.last() {
@@ -76,7 +76,7 @@ impl Multiplications {
 	}
 }
 
-fn find_ms(n : uint, max_depth : Option<uint>) -> HashMap<uint, Vec<(uint,uint,uint)>> {
+fn find_ms(n : u64, max_depth : Option<usize>) -> HashMap<u64, Vec<(u64,u64,u64)>> {
 	let mut tmap = HashMap::new();
 	let mut queue = RingBuf::new();
 	
@@ -90,7 +90,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> HashMap<uint, Vec<(uint,uint,u
 	
 	queue.push_back(first);
 	
-	let maxn = (n as f32).log2().ceil() as uint * 2;
+	let maxn = (n as f32).log2().ceil() as usize * 2;
 	
 	loop {
 		let last = match queue.pop_front() {
@@ -114,7 +114,7 @@ fn find_ms(n : uint, max_depth : Option<uint>) -> HashMap<uint, Vec<(uint,uint,u
 					//~ _ => {}
 				//~ }
 			};
-			// let maxn = ((n1 + n2) as f32).log2().ceil() as uint * 2;
+			// let maxn = ((n1 + n2) as f32).log2().ceil() as u64 * 2;
 			if last.path.len() >= maxn {continue;}
 			match max_depth {
 				Some(d) if d < last.path.len() => {continue;}
@@ -173,13 +173,13 @@ pub fn main(){
 	let ms = find_ms(bigm, Some(11)); // 11 found by trial and error; 10 doesn't get everything, 11 works, so take 11...
 	
 	let mut msum = 0;
-	for k in range(1, bigm+1){
+	for k in 1..(bigm+1){
 		let v = match ms.get(&k){
 			None => panic!("NOT FOUND: {}", k),
 			Some(v2) => v2
 		};
 	//~ for (k, v) in ms.iter() {
-		println!("{} :: {} {}", k, v.len() - 1, v);
+		println!("{} :: {} {:?}", k, v.len() - 1, v);
 		msum += v.len() - 1;
 	}
 	println!("================================================================================");

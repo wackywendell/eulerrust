@@ -8,16 +8,16 @@ extern crate eulerrust;
 use std::collections::HashSet;
 use std::iter::range_step;
 
-pub fn get_palindrome_sums(max : uint) -> HashSet<uint> {
+pub fn get_palindrome_sums(max : u64) -> HashSet<u64> {
 	let mut set = HashSet::new();
 	
-	for i in range(1u, eulerrust::isqrt(max)+1){
+	for i in 1u64..(eulerrust::isqrt(max)+1){
 		let mut isq = 0;
 		//println!("isq: {}", isq);
-		for j in range_step(i as int, 0i, -1i) {
-			isq += (j as uint)*(j as uint);
+		for j in range_step(i as i64, 0i64, -1i64) {
+			isq += (j as u64)*(j as u64);
 			if isq > max { break; }
-			if j == i as int { continue; }
+			if j == i as i64 { continue; }
 			if eulerrust::is_palindrome(isq) {
 				if max <= 1000 {
 					println!("{} - {} -> {}", j,i,isq);
@@ -33,7 +33,7 @@ pub fn get_palindrome_sums(max : uint) -> HashSet<uint> {
 #[test]
 fn test_euler125() {
 	let s = get_palindrome_sums(1000);
-	let ssum = s.iter().fold(0u, |a, &b| a + b);
+	let ssum = s.iter().fold(0u64, |a, &b| a + b);
 	assert_eq!(ssum, 4164);
 }
 
@@ -42,6 +42,6 @@ pub fn main(){
 	
 	println!("s len: {}", s.len());
 	
-	let ssum = s.iter().fold(0u, |a, &b| a + b);
+	let ssum = s.iter().fold(0u64, |a, &b| a + b);
 	println!("s sum: {}", ssum);
 }

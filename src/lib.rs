@@ -11,6 +11,7 @@ extern crate primes;
 use std::collections::HashSet;
 
 use std::collections::HashMap;
+use std::collections::hash_map;
 use std::collections::hash_map::Entry;
 
 #[cfg(test)]
@@ -19,18 +20,21 @@ use std::num::Int;
 pub use primes::PrimeSet;
 
 /// Count the number of occurrences of each value in an iterator
-pub fn counter<K : std::hash::Hash + Eq, I : Iterator<K>>(mut list : I) -> HashMap<K, uint> {
-	let mut counter : HashMap<K, uint> = HashMap::new();
+pub fn counter<K, I>(mut list : I) -> HashMap<K, u64> 
+	where 	K : Eq + std::hash::Hash<hash_map::Hasher>,
+			I : Iterator<Item=K>
+{
+	let mut counter : HashMap<K, u64> = HashMap::new();
 	for key in list {
 		match counter.entry(key) {
-			Entry::Vacant(entry) => {entry.set(1);},
+			Entry::Vacant(entry) => {entry.insert(1);},
 			Entry::Occupied(entry) => {(*entry.into_mut()) += 1;}
 		}
 	}
 	counter
 }
 
-pub fn isqrt_opt(n : uint) -> Option<uint> {
+pub fn isqrt_opt(n : u64) -> Option<u64> {
 	if n <= 1 {return Some(n);}
 	let mut x = n / 2;
 	let mut usedset = HashSet::new();
@@ -50,7 +54,7 @@ pub fn isqrt_opt(n : uint) -> Option<uint> {
 	Some(x)
 }
 
-pub fn isqrt(n : uint) -> uint {
+pub fn isqrt(n : u64) -> u64 {
 	if n <= 1 { return n; }
 	let mut x = n / 2;
 	let mut usedset = HashSet::new();
@@ -71,10 +75,10 @@ pub fn isqrt(n : uint) -> uint {
 	return x
 }
 
-pub fn is_palindrome(n : uint) -> bool {
+pub fn is_palindrome(n : u64) -> bool {
 	let s = n.to_string();
 	//let s_rev = String::from_utf8(s.into_bytes().iter().rev().collect());
-	let s_rev = s.as_slice().as_bytes().iter().rev();
+	let s_rev = s.as_bytes().iter().rev();
 	let s_rev_vec : Vec<u8> = s_rev.map(|&b| b).collect();
 	let s_rev = String::from_utf8(s_rev_vec);
 	match s_rev {
@@ -86,14 +90,15 @@ pub fn is_palindrome(n : uint) -> bool {
 #[deriving(Clone)]
 pub struct Pairs<'a, T :'a>{
 	vector : &'a [T],
-	first : uint,
-	second : uint
+	first : usize,
+	second : usize
 }
 
-impl<'a, T> Iterator<(&'a T, &'a T)> for Pairs<'a, T> {
+impl<'a, T> Iterator for Pairs<'a, T> {
+	type Item=(&'a T, &'a T);
 	fn next(&mut self) -> Option<(&'a T, &'a T)> {
 		let l = self.vector.len();
-		if self.second >= l-1 && self.first >= l-2 {return None;}
+		if self.second >= (l-1) && self.first >= (l-2) {return None;}
 		self.second += 1;
 		
 		if self.second >= l {
@@ -101,7 +106,7 @@ impl<'a, T> Iterator<(&'a T, &'a T)> for Pairs<'a, T> {
 			self.second = self.first + 1;
 		}
 		
-		return unsafe { Some((self.vector.unsafe_get(self.first), self.vector.unsafe_get(self.second)))}
+		return unsafe { Some((self.vector.get_unchecked(self.first), self.vector.get_unchecked(self.second)))}
 	}
 }
 
@@ -120,15 +125,15 @@ fn test_square(){
 	
 	let mut ntests = vec![1,7,8,9,10,11,12,189654,4294967295];
 	
-	for _ in range(0u, 1000u){
-		let mut n = std::rand::random::<uint>();
-		n = n % 2u.pow(std::uint::BITS / 2);
+	for _ in (0u64..1000){
+		let mut n = std::rand::random::<u64>();
+		n = n % 2u64.pow(std::u64::BITS / 2);
 		ntests.push(n);
 	}
 	
 	for &n in ntests.iter(){
 		println!("n: {}, n*n: {}", n, n*n);
-		assert!(n < 2u.pow(std::uint::BITS / 2));
+		assert!(n < 2u64.pow(std::u64::BITS / 2));
 		assert_eq!(isqrt_opt(n*n), Some(n));
 		if n > 1 {
 			assert_eq!(isqrt_opt(n*n - 1), None);
@@ -144,15 +149,15 @@ fn test_isqrt(){
 	assert_eq!(isqrt(0), 0);
 	let mut ntests = vec![1,7,8,9,10,11,12,189654,4294967295];
 	
-	for i in range(1u, 1001u){
-		let mut n = std::rand::random::<uint>();
-		n = n % 2u.pow(std::uint::BITS / 2);
+	for i in (1u64..1001){
+		let mut n = std::rand::random::<u64>();
+		n = n % 2u64.pow(std::u64::BITS / 2);
 		ntests.push(n);
 		ntests.push(i);
 	}
 	
 	for &n in ntests.iter() {
-		assert!(n < 2u.pow(std::uint::BITS / 2));
+		assert!(n < 2u64.pow(std::u64::BITS / 2));
 		let x = isqrt(n);
 		assert!(x*x <= n);
 		assert!((x+1)*(x+1) > n);
@@ -180,7 +185,7 @@ fn test_palindrome(){
 
 #[test]
 fn test_pairs(){
-	let v = [1,2,5,4u];
+	let v = [1,2,5,4u64];
 	let mut my_pairs = pairs(&v);
 	
 	assert_eq!(my_pairs.next(), Some((&v[0], &v[1])));

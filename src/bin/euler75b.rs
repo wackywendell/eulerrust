@@ -13,12 +13,14 @@ extern crate eulerrust;
 use num::integer::gcd;
 use std::collections::BTreeSet;
 
-fn make_triplets(max_length : uint) -> BTreeSet<(uint, uint, uint)> {
-	let mut s = BTreeSet::new();
-	for v in range(1,max_length){
+// Calculate "basic" Pythagorean triplets (excluding those with a common factor)
+// Max_length is the maximum of a + b + c 
+fn make_triplets(max_length : u64) -> BTreeSet<(u64, u64, u64)> {
+	let mut s : BTreeSet<(u64, u64, u64)> = BTreeSet::new();
+	for v in (1..max_length) {
 		let vsq = v*v;
 		if vsq >= max_length {break;}
-		for u in range(1, v){
+		for u in (1..v) {
 			if gcd(u,v) > 1 {continue;};
 			if u % 2 == v % 2 {continue;};
 			if 2*vsq + 2*u*v > max_length {break;}
@@ -37,11 +39,12 @@ fn make_triplets(max_length : uint) -> BTreeSet<(uint, uint, uint)> {
 	s
 }
 
-fn all_triplets(max_length : uint) -> BTreeSet<(uint, uint, uint)> {
+// Calculate all Pythagorean triplets
+fn all_triplets(max_length : u64) -> BTreeSet<(u64, u64, u64)> {
 	let primitives = make_triplets(max_length);
 	let mut s = BTreeSet::new();
 	for &(a,b,c) in primitives.iter() {
-		for n in range(1, max_length / c) {
+		for n in 1..((max_length as u64) / c) {
 			let (an, bn, cn) = (a*n, b*n, c*n);
 			if an + bn + cn > max_length { continue;}
 			s.insert((an,bn,cn));
@@ -56,7 +59,7 @@ fn test_make_triplets() {
 	let v = vec![(3, 4, 5), (5, 12, 13), (7, 24, 25), (8, 15, 17), 
 							(9, 40, 41), (12, 35, 37), (20, 21, 29)];
 	
-	let mut s0 : BTreeSet<(uint, uint, uint)> = BTreeSet::new();
+	let mut s0 : BTreeSet<(u64, u64, u64)> = BTreeSet::new();
 	for &tup in v.iter() {s0.insert(tup);}
 	
 	let s = make_triplets(120);
@@ -73,7 +76,7 @@ fn test_all_triplets() {
 				(20, 48, 52), (21, 28, 35), (24, 32, 40), (24, 45, 51),
 				(27, 36, 45), (30, 40, 50)];
 	
-	let mut s0 : BTreeSet<(uint, uint, uint)> = BTreeSet::new();
+	let mut s0 : BTreeSet<(u64, u64, u64)> = BTreeSet::new();
 	for &tup in v.iter() {s0.insert(tup);}
 	
 	let s = all_triplets(120);
@@ -83,13 +86,13 @@ fn test_all_triplets() {
 
 pub fn main(){
 	let s = make_triplets(120);
-	println!("{}", s);
+	println!("{:?}", s);
 	
 	let s = all_triplets(120);
-	println!("{}", s);
+	println!("{:?}", s);
 	
 	
-	let ls = s.iter().map(|&(m,l,n)| {l+m+n}).collect::<Vec<uint>>();
+	let ls = s.iter().map(|&(m,l,n)| {l+m+n}).collect::<Vec<u64>>();
 	let counts = eulerrust::counter(ls.iter());
 	
 	let len1 = counts.iter().filter(|&(_, &v)| {v == 1}).count();
