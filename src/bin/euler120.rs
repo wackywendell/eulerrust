@@ -38,15 +38,15 @@ fn test_max_rem(){
 #[test]
 fn test_max_rem_long(){
 	let mut sum = 0;
-	for a in 3..1001 {
+	for a in 3u64..1001u64 {
 		sum += get_max_rem(a);
 	}
-	assert_eq!(sum, 333082500); 
+	assert_eq!(sum, 333082500);
 }
 
 pub fn main(){
 	let mut sum = 0;
-	for a in 3..1001 {
+	for a in 3u64..1001u64 {
 		sum += get_max_rem(a);
 	}
 	
