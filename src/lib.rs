@@ -20,7 +20,7 @@ use std::num::Int;
 pub use primes::PrimeSet;
 
 /// Count the number of occurrences of each value in an iterator
-pub fn counter<K, I>(mut list : I) -> HashMap<K, u64> 
+pub fn counter<K, I>(mut list : I) -> HashMap<K, u64>
 	where 	K : Eq + std::hash::Hash<hash_map::Hasher>,
 			I : Iterator<Item=K>
 {
@@ -87,7 +87,7 @@ pub fn is_palindrome(n : u64) -> bool {
 	}
 }
 
-#[deriving(Clone)]
+#[derive(Clone)]
 pub struct Pairs<'a, T :'a>{
 	vector : &'a [T],
 	first : usize,
