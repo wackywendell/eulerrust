@@ -20,8 +20,8 @@ use std::num::Int;
 pub use primes::PrimeSet;
 
 /// Count the number of occurrences of each value in an iterator
-pub fn counter<K, I>(mut list : I) -> HashMap<K, u64>
-	where 	K : Eq + std::hash::Hash<hash_map::Hasher>,
+pub fn counter<K, I>(list : I) -> HashMap<K, u64>
+	where 	K : Eq + std::hash::Hash,
 			I : Iterator<Item=K>
 {
 	let mut counter : HashMap<K, u64> = HashMap::new();

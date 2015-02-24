@@ -39,8 +39,7 @@ Basically, it just follows the tree to every possibility < n, and stops at a max
 **/
 
 extern crate eulerrust;
-use std::collections::HashMap;
-use std::collections::RingBuf;
+use std::collections::{HashMap,VecDeque};
 use std::num::Float;
 
 pub struct Multiplications {
@@ -78,7 +77,7 @@ impl Multiplications {
 
 fn find_ms(n : u64, max_depth : Option<usize>) -> HashMap<u64, Vec<(u64,u64,u64)>> {
 	let mut tmap = HashMap::new();
-	let mut queue = RingBuf::new();
+	let mut queue = VecDeque::new();
 	
 	let first = Multiplications {
 		sum : 1,
