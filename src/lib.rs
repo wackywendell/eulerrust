@@ -1,4 +1,8 @@
+#![feature(core)]
+#![feature(std_misc)]
+
 /// Functions for use in euler projects
+
 
 #[warn(non_camel_case_types)]
 #[warn(non_snake_case)]
@@ -7,14 +11,13 @@
 #[warn(missing_docs)]
 
 extern crate primes;
+extern crate rand;
 
 use std::collections::HashSet;
 
 use std::collections::HashMap;
-use std::collections::hash_map;
 use std::collections::hash_map::Entry;
 
-#[cfg(test)]
 use std::num::Int;
 
 pub use primes::PrimeSet;
@@ -37,17 +40,16 @@ pub fn counter<K, I>(list : I) -> HashMap<K, u64>
 pub fn isqrt_opt(n : u64) -> Option<u64> {
 	if n <= 1 {return Some(n);}
 	let mut x = n / 2;
+	while x > 2u64.pow(std::u64::BITS / 2){
+		// Prevents overflows
+		x = (x + n / x + 1) / 2;
+	}
 	let mut usedset = HashSet::new();
-	
-	//println!("New x: {}", x);
 	
 	while x*x != n {
 		usedset.insert(x);
-		// let addx = x + n / x;
 		x = (x + n / x + 1) / 2;
-		//println!("New x: {} ({})", x, addx);
 		if usedset.contains(&x) {
-			//println!("Seen! {} ({}, {})", x, x*x, n);
 			return None;
 		}
 	}
@@ -57,20 +59,24 @@ pub fn isqrt_opt(n : u64) -> Option<u64> {
 pub fn isqrt(n : u64) -> u64 {
 	if n <= 1 { return n; }
 	let mut x = n / 2;
-	let mut usedset = HashSet::new();
+	while x > 2u64.pow(std::u64::BITS / 2){
+		// Prevents overflows
+		x = (x + n / x + 1) / 2;
+	}
 	
 	while x*x != n {
-		usedset.insert(x);
 		let lastx = x;
 		x = (x + n / x + 1) / 2;
-		//if usedset.contains(&x) {
+		println!("new x: {}", x);
 		if x == lastx {
+			println!("inside if: {}", x);
 			if x*x < n {
 				return x;
 			} else {
 				return x-1;
 			}
 		}
+		println!("if passed: {}", x);
 	}
 	return x
 }
@@ -126,7 +132,7 @@ fn test_square(){
 	let mut ntests = vec![1,7,8,9,10,11,12,189654,4294967295];
 	
 	for _ in (0u64..1000){
-		let mut n = std::rand::random::<u64>();
+		let mut n = rand::random::<u64>();
 		n = n % 2u64.pow(std::u64::BITS / 2);
 		ntests.push(n);
 	}
@@ -147,18 +153,18 @@ fn test_square(){
 #[test]
 fn test_isqrt(){
 	assert_eq!(isqrt(0), 0);
-	let mut ntests = vec![1,7,8,9,10,11,12,189654,4294967295];
+	let mut ntests : Vec<u64> = vec![1,7,8,9,10,11,12,189654,4294967295];
 	
 	for i in (1u64..1001){
-		let mut n = std::rand::random::<u64>();
+		let mut n = rand::random::<u64>();
 		n = n % 2u64.pow(std::u64::BITS / 2);
 		ntests.push(n);
 		ntests.push(i);
 	}
 	
-	for &n in ntests.iter() {
+	for n in ntests {
 		assert!(n < 2u64.pow(std::u64::BITS / 2));
-		let x = isqrt(n);
+		let x : u64 = isqrt(n);
 		assert!(x*x <= n);
 		assert!((x+1)*(x+1) > n);
 		assert_eq!(isqrt(n*n - 1), n-1);

@@ -6,6 +6,7 @@ authors = [ "wackywendell@gmail.com" ]
 
 [dependencies]
 primes = "*"
+rand = "*"
 #num = "*"
 
 [dependencies.num]
