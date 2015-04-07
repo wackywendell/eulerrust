@@ -1,4 +1,4 @@
-#![feature(core)]
+#![feature(step_by)]
 
 #[warn(non_camel_case_types)]
 #[warn(non_snake_case)]
@@ -8,7 +8,6 @@
 
 extern crate eulerrust;
 use std::collections::HashSet;
-use std::iter::range_step;
 
 pub fn get_palindrome_sums(max : u64) -> HashSet<u64> {
 	let mut set = HashSet::new();
@@ -16,7 +15,7 @@ pub fn get_palindrome_sums(max : u64) -> HashSet<u64> {
 	for i in 1u64..(eulerrust::isqrt(max)+1){
 		let mut isq = 0;
 		//println!("isq: {}", isq);
-		for j in range_step(i as i64, 0i64, -1i64) {
+		for j in ((i as i64)..0i64).step_by(-1i64) {
 			isq += (j as u64)*(j as u64);
 			if isq > max { break; }
 			if j == i as i64 { continue; }

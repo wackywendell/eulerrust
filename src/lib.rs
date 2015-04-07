@@ -1,5 +1,4 @@
 #![feature(core)]
-#![feature(std_misc)]
 
 /// Functions for use in euler projects
 
@@ -17,8 +16,6 @@ use std::collections::HashSet;
 
 use std::collections::HashMap;
 use std::collections::hash_map::Entry;
-
-use std::num::Int;
 
 pub use primes::PrimeSet;
 
@@ -40,7 +37,7 @@ pub fn counter<K, I>(list : I) -> HashMap<K, u64>
 pub fn isqrt_opt(n : u64) -> Option<u64> {
 	if n <= 1 {return Some(n);}
 	let mut x = n / 2;
-	while x > 2u64.pow(std::u64::BITS / 2){
+	while x > 2u64.pow((std::u64::BITS / 2) as u32){
 		// Prevents overflows
 		x = (x + n / x + 1) / 2;
 	}
@@ -59,7 +56,7 @@ pub fn isqrt_opt(n : u64) -> Option<u64> {
 pub fn isqrt(n : u64) -> u64 {
 	if n <= 1 { return n; }
 	let mut x = n / 2;
-	while x > 2u64.pow(std::u64::BITS / 2){
+	while x > 2u64.pow((std::u64::BITS / 2) as u32){
 		// Prevents overflows
 		x = (x + n / x + 1) / 2;
 	}
@@ -133,13 +130,13 @@ fn test_square(){
 	
 	for _ in (0u64..1000){
 		let mut n = rand::random::<u64>();
-		n = n % 2u64.pow(std::u64::BITS / 2);
+		n = n % 2u64.pow((std::u64::BITS / 2) as u32);
 		ntests.push(n);
 	}
 	
 	for &n in ntests.iter(){
 		println!("n: {}, n*n: {}", n, n*n);
-		assert!(n < 2u64.pow(std::u64::BITS / 2));
+		assert!(n < 2u64.pow((std::u64::BITS / 2) as u32));
 		assert_eq!(isqrt_opt(n*n), Some(n));
 		if n > 1 {
 			assert_eq!(isqrt_opt(n*n - 1), None);
@@ -157,13 +154,13 @@ fn test_isqrt(){
 	
 	for i in (1u64..1001){
 		let mut n = rand::random::<u64>();
-		n = n % 2u64.pow(std::u64::BITS / 2);
+		n = n % 2u64.pow((std::u64::BITS / 2) as u32);
 		ntests.push(n);
 		ntests.push(i);
 	}
 	
 	for n in ntests {
-		assert!(n < 2u64.pow(std::u64::BITS / 2));
+		assert!(n < 2u64.pow((std::u64::BITS / 2) as u32));
 		let x : u64 = isqrt(n);
 		assert!(x*x <= n);
 		assert!((x+1)*(x+1) > n);

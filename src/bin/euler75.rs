@@ -7,7 +7,6 @@
 extern crate eulerrust;
 
 use std::collections::HashMap;
-use std::num::Float;
 
 //~ fn make_triplets(max_length : u64) -> Vec<(u64, u64, u64)> {
 	//~ let mut v = Vec::new();
@@ -24,7 +23,7 @@ use std::num::Float;
 			//~ }
 		//~ }
 	//~ }
-	//~ 
+	//~
 	//~ v
 //~ }
 

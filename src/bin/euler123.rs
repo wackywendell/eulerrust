@@ -39,25 +39,36 @@ fn test_123(){
 	let (mut n, mut r) = (0,0);
 	while r < 1000_000_000 {
 		n += 1;
-		let p = *pset.get(&(n as usize));
+		let p = pset.get(n as usize);
 		r = get_rem(p, n);
 	}
 	assert_eq!(n, 7037);
 }
 
-pub fn main() {
+pub fn solution(rmx : u64) -> (u64, u64, u64){
 	let mut pset = eulerrust::PrimeSet::new();
-	println!("{}", pset.len());
-	let p = *pset.get(&(7037 as usize));
-	println!("p_n: {}", p);
-	println!("rem: {}", get_rem(p, 7037));
 	
 	let (mut n, mut p, mut r) = (0u64,0u64,0u64);
-	while r < 10_000_000_000 {
+	while r < rmx {
 		n += 1;
-		p = *pset.get(&(n as usize));
+		p = pset.get(n as usize);
 		r = get_rem(p, n);
 	}
+	(n,p,r)
+}
+
+#[test]
+fn sol_test(){
+	let (n,p,r) = solution(10_000_000_000);
+	
+	assert_eq!(n, 21033);
+	assert_eq!(p, 237733);
+	assert_eq!(r, 10000476378);
+}
+
+pub fn main() {
+	let (n,p,r) = solution(10_000_000_000);
+	
 	println!("n: {}, p: {}, r: {}", n, p, r);
 	// Prints:
 	// n: 21033, p: 237733, r: 10000476378
