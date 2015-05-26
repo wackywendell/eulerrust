@@ -5,9 +5,9 @@ version = "0.1.0"
 authors = [ "wackywendell@gmail.com" ]
 
 [dependencies]
-primes = "*"
-rand = "*"
-#num = "*"
+primes = "^0.2"
+rand = "^0.3"
+num = "^0.1"
 
-[dependencies.num]
-git = "https://github.com/rust-lang/num"
+# [dependencies.num]
+# git = "https://github.com/rust-lang/num"
