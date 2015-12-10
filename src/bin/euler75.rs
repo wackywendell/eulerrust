@@ -29,7 +29,7 @@ use std::collections::HashMap;
 
 fn make_triplets(max_length : u64) -> Vec<(u64, u64, u64)> {
 	let mut s = HashMap::new();
-	for n in (0..max_length) {
+	for n in 0..max_length {
 		let nsq = n*n;
 		s.insert(nsq, n);
 	}
@@ -43,7 +43,7 @@ fn make_triplets(max_length : u64) -> Vec<(u64, u64, u64)> {
 	for n in 3..(((max_length as f64) / (2.0f64).sqrt()).ceil() as u64) {
 		let nsq = n*n;
 		// lower lim: ((n as f64)*2.0 +1.0).sqrt().floor() as u64
-		for m in (2..n) {
+		for m in 2..n {
 			let msq = m*m;
 			if n + m > max_length { break;}
 			match s.get(&(nsq + msq)) {

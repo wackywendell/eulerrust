@@ -1,5 +1,3 @@
-#![feature(core)]
-
 /// Functions for use in euler projects
 
 
@@ -19,6 +17,8 @@ use std::collections::hash_map::Entry;
 
 pub use primes::PrimeSet;
 
+const U64_BITS : usize = 64;
+
 /// Count the number of occurrences of each value in an iterator
 pub fn counter<K, I>(list : I) -> HashMap<K, u64>
 	where 	K : Eq + std::hash::Hash,
@@ -37,7 +37,7 @@ pub fn counter<K, I>(list : I) -> HashMap<K, u64>
 pub fn isqrt_opt(n : u64) -> Option<u64> {
 	if n <= 1 {return Some(n);}
 	let mut x = n / 2;
-	while x > 2u64.pow((std::u64::BITS / 2) as u32){
+	while x > 2u64.pow((U64_BITS / 2) as u32){
 		// Prevents overflows
 		x = (x + n / x + 1) / 2;
 	}
@@ -56,7 +56,7 @@ pub fn isqrt_opt(n : u64) -> Option<u64> {
 pub fn isqrt(n : u64) -> u64 {
 	if n <= 1 { return n; }
 	let mut x = n / 2;
-	while x > 2u64.pow((std::u64::BITS / 2) as u32){
+	while x > 2u64.pow((U64_BITS / 2) as u32){
 		// Prevents overflows
 		x = (x + n / x + 1) / 2;
 	}
@@ -128,15 +128,15 @@ fn test_square(){
 	
 	let mut ntests = vec![1,7,8,9,10,11,12,189654,4294967295];
 	
-	for _ in (0u64..1000){
+	for _ in 0u64..1000 {
 		let mut n = rand::random::<u64>();
-		n = n % 2u64.pow((std::u64::BITS / 2) as u32);
+		n = n % 2u64.pow((U64_BITS / 2) as u32);
 		ntests.push(n);
 	}
 	
 	for &n in ntests.iter(){
 		println!("n: {}, n*n: {}", n, n*n);
-		assert!(n < 2u64.pow((std::u64::BITS / 2) as u32));
+		assert!(n < 2u64.pow((U64_BITS / 2) as u32));
 		assert_eq!(isqrt_opt(n*n), Some(n));
 		if n > 1 {
 			assert_eq!(isqrt_opt(n*n - 1), None);
@@ -152,15 +152,15 @@ fn test_isqrt(){
 	assert_eq!(isqrt(0), 0);
 	let mut ntests : Vec<u64> = vec![1,7,8,9,10,11,12,189654,4294967295];
 	
-	for i in (1u64..1001){
+	for i in 1u64..1001 {
 		let mut n = rand::random::<u64>();
-		n = n % 2u64.pow((std::u64::BITS / 2) as u32);
+		n = n % 2u64.pow((U64_BITS / 2) as u32);
 		ntests.push(n);
 		ntests.push(i);
 	}
 	
 	for n in ntests {
-		assert!(n < 2u64.pow((std::u64::BITS / 2) as u32));
+		assert!(n < 2u64.pow((U64_BITS / 2) as u32));
 		let x : u64 = isqrt(n);
 		assert!(x*x <= n);
 		assert!((x+1)*(x+1) > n);

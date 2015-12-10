@@ -17,10 +17,10 @@ use std::collections::BTreeSet;
 // Max_length is the maximum of a + b + c 
 fn make_triplets(max_length : u64) -> BTreeSet<(u64, u64, u64)> {
 	let mut s : BTreeSet<(u64, u64, u64)> = BTreeSet::new();
-	for v in (1..max_length) {
+	for v in 1..max_length {
 		let vsq = v*v;
 		if vsq >= max_length {break;}
-		for u in (1..v) {
+		for u in 1..v {
 			if gcd(u,v) > 1 {continue;};
 			if u % 2 == v % 2 {continue;};
 			if 2*vsq + 2*u*v > max_length {break;}
